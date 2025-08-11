@@ -14,47 +14,60 @@ git clone https://github.com/your-username/codecov-demo-repo.git
 cd codecov-demo-repo
 ```
 
-3. **Add a Codecov Token:**
-   - In your GitHub repository, navigate to **Settings** > **Secrets and variables** > **Actions**.
-   - Click **New repository secret** and add your Codecov token with the name `CODECOV_TOKEN`.
+3. **Install Codecov GitHub App**
+   - Go to https://github.com/apps/codecov/installations/new
+   - Install the Codecov GitHub App for your organization or repository.
+   - This allows PR checks to appear without needing a token for public repos.
 
-2. **Install Dependencies:**
+4. **Add Codecov Token**
+   - In Codecov, you will see configue next to the new repository, click on configure and scroll down to copy the upload token named `CODECOV_TOKEN`.
+   - In your GitHub repository, go to Settings → Secrets and variables → Actions → New repository secret.
+   - Name it `CODECOV_TOKEN` and paste in the token.
+
+5. **Install Dependencies:**
    - Run `python3 -m venv venv`, `source venv/bin/activate`, `pip install -r requirements.txt` to install the necessary Python packages.
 
-4. **Run Tests:**
-   - Execute `PYTHONPATH=$(pwd) pytest --cov=src --cov-report=xml` to run tests and generate a coverage report. Run `--junitxml=junit.xml -o junit_family=legacy` to the command to generate a JUnit report. 
+6. **First Commit & Enable Actions**
+```bash
+git add .
+git commit -m "Initial Codecov demo setup"
+git push origin main
+```
+ Alternatively, use the CodeEditor UI to commit and push changes.
 
-5. **Continuous Integration:**
-   - The repository is set up with GitHub Actions to run tests and upload coverage reports to Codecov on each push and pull request.
+Go to Actions in your repo in Github and click Enable workflows when prompted.
 
-------
+7. **Create a Feature Branch and Make a Small Change**
+```bash
+git checkout -b demo/feature-1
+```
+ Alternatively, use the CodeEditor UI to create a branch
 
-*For the owner of the demo repository, since you can't fork:*
+Edit any file in src/ or tests/ (even adding a comment is fine).
 
-1. **Add a Codecov Token:**
-   - In your GitHub repository, navigate to **Settings** > **Secrets and variables** > **Actions**.
-   - Click **New repository secret** and add your Codecov token with the name `CODECOV_TOKEN`.
+8. **Run Tests Locally Before Pushing:**
+This ensures you can see the generated files before CI runs.
+   - Execute `PYTHONPATH=$(pwd) pytest --cov=src --cov-report=xml` to run tests and generate a coverage report. Add this `--junitxml=junit.xml -o junit_family=legacy` to the command to generate a JUnit report.
 
-2. **Creating a Test Repository Based on This Template:**
-    - Create a new repository in github (e.g., codecov-test-repo)
-    ```
-    git clone --bare https://github.com/Kobby-Bawuah/codecov-demo-repo.git
-    cd codecov-demo-repo.git
-    git push --mirror https://github.com/your-username/codecov-test-repo.git
-    cd ..
-    rm -rf codecov-demo-repo.git
-    ```
-3. **Clone the new repository:**
-    ```
-    git clone https://github.com/your-username/codecov-test-repo.git
-    cd codecov-test-repo
-    ```
+coverage.xml → coverage data (used by Codecov)
+junit.xml → JUnit test report (viewable/downloadable in CI) 
 
-3. **Install Dependencies:**
-   - Run `python3 -m venv venv`, `source venv/bin/activate`, `pip install -r requirements.txt` to install the necessary Python packages.
+9. **Commit and Push the Branch:**
+```bash
+git add .
+git commit -m "Demo change to trigger CI"
+git push -u origin demo/feature-1
+```
+Alternatively, use the CodeEditor UI to commit and push changes.
 
-4. **Run Tests:**
-   - Execute `PYTHONPATH=$(pwd) pytest --cov=src --cov-report=xml` to run tests and generate a coverage report. Run `--junitxml=junit.xml -o junit_family=legacy` to the command to generate a JUnit report. 
+10. **Open a Pull Request**
+   - From your fork, open a PR from demo/feature-1 → main. In the UI, you will normally see an notification after the push, else you can click the configure button on that feature branch and you will see the create PR.
 
-5. **Continuous Integration:**
-   - The repository is set up with GitHub Actions to run tests and upload coverage reports to Codecov on each push and pull request.
+Once the PR is created, you should see status updates directly on the PR page:
+   - CI check (CI / test-and-coverage) — confirms whether your tests passed and uploads the JUnit report as an artifact.
+   - Codecov checks (codecov/project and codecov/patch) — display the coverage status for your changes and overall project.
+
+11. **What to do next**
+- Wait for all checks to complete.
+- Once you’re comfortable with the results, merge the PR into main.
+- After merging, log in to Codecov and open your repository’s dashboard — you should see your coverage uploads listed there.
