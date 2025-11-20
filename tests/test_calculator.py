@@ -4,6 +4,7 @@ from src.calculator import add, subtract
 def test_add():
     assert add(2, 3) == 5
     assert add(-1, 1) == 0
+    assert add(-4, 1) == -3
 
 # This is a test for the subtract function
 def test_subtract():
